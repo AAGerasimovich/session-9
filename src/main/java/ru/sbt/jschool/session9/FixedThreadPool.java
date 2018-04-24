@@ -73,20 +73,11 @@ public class FixedThreadPool implements Executor {
         private volatile AtomicInteger failedTaskCount = new AtomicInteger();
         private volatile AtomicInteger interruptedTaskCount = new AtomicInteger();
 
-        public int getCompletedTaskCount() {
-            return completedTaskCount.get();
+        public int getCompletedTaskCount() { return completedTaskCount.get(); }
 
-        }
+        public int getFailedTaskCount() { return failedTaskCount.get(); }
 
-        public int getFailedTaskCount() {
-            return failedTaskCount.get();
-
-        }
-
-        public int getInterruptedTaskCount() {
-            return interruptedTaskCount.get();
-
-        }
+        public int getInterruptedTaskCount() { return interruptedTaskCount.get(); }
 
         public void interrupt() {
             if(!workQueue.isEmpty()) {
@@ -95,9 +86,6 @@ public class FixedThreadPool implements Executor {
             }
         }
 
-        public boolean isFinished() {
-            return queueCount == failedTaskCount.get() + completedTaskCount.get();
-
-        }
+        public boolean isFinished() { return queueCount == failedTaskCount.get() + completedTaskCount.get(); }
     }
 }
