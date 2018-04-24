@@ -3,11 +3,6 @@ package ru.sbt.jschool.session9;
 
 public class ExecutionManagerImpl implements ExecutionManager {
 
-    public static void main(String[] args) {
-
-
-    }
-
     private final static int POOL_SIZE = 10;
 
     public Context execute(Runnable callback, Runnable... tasks){
@@ -31,9 +26,6 @@ public class ExecutionManagerImpl implements ExecutionManager {
 
         threadPool.shutdown();
         callbackThread.start();
-
-
-
         return c;
     }
 

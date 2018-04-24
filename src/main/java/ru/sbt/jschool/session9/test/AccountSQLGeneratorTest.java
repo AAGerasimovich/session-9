@@ -17,9 +17,10 @@ public class AccountSQLGeneratorTest {
         }
         return tt;
     }
-    public  Runnable getCallback(){
 
+    public  Runnable getCallback(){
         return new Runnable () {
+
             @Override
             public void run() {
                 System.out.println("im callback");
@@ -60,7 +61,6 @@ public class AccountSQLGeneratorTest {
         System.out.println("Interrupted - "+ c.getInterruptedTaskCount());
         System.out.println("Finished    - "+ c.isFinished()+ "\n\n\n");
 
-
         assertEquals(false, c.isFinished());
     }
     @Test public void testException() {
@@ -76,7 +76,6 @@ public class AccountSQLGeneratorTest {
         System.out.println("Failed      - " + c.getFailedTaskCount());
         System.out.println("Interrupted - "+ c.getInterruptedTaskCount());
         System.out.println("Finished    - "+ c.isFinished()+ "\n\n\n");
-
 
         assertEquals(true, c.isFinished());
     }
