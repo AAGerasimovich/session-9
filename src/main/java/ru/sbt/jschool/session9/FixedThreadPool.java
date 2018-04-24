@@ -4,14 +4,14 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.Queue;
 
-public class ThreadPool implements Executor {
+public class FixedThreadPool implements Executor {
     private final Queue<Runnable> workQueue = new ConcurrentLinkedQueue<>();
-    private volatile boolean isRunning = true;
-    private volatile boolean isOpen = true;
+    private volatile boolean isOpen= true;
     private PoolContext context;
     private int queueCount;
 
-    public ThreadPool(int nThreads) {
+    public FixedThreadPool(int nThreads) {
+
         context = new PoolContext();
         for (int i = 0; i < nThreads; i++) {
             new Thread(new TaskWorker()).start();
@@ -34,7 +34,7 @@ public class ThreadPool implements Executor {
 
         @Override
         public void run() {
-            while (isRunning) {
+            while (true) {
                 Runnable nextTask = workQueue.poll();
                 if (nextTask != null) {
                     try {
@@ -60,8 +60,6 @@ public class ThreadPool implements Executor {
         private volatile int  completedTaskCount;
         private volatile int  failedTaskCount;
         private volatile int  interruptedTaskCount;
-
-
 
         public int getCompletedTaskCount() {
             return completedTaskCount;
