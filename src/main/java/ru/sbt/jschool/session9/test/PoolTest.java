@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  */
-public class AccountSQLGeneratorTest {
+public class PoolTest {
 
     public  Runnable[] getTasks(int n){
         Runnable[] tt = new TestTask[n];
