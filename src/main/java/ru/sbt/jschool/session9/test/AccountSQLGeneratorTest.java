@@ -48,11 +48,10 @@ public class AccountSQLGeneratorTest {
 
         ExecutionManager em = new ExecutionManagerImpl();
         Context c = em.execute(getCallback(), getTasks(15));
+
         try {
             Thread.sleep(100);
-        }catch (Exception e){}
-        c.interrupt();
-        try {
+            c.interrupt();
             Thread.sleep(2000);
         }catch (Exception e){}
 
