@@ -14,18 +14,10 @@ public class ExecutionManagerImpl implements ExecutionManager {
             threadPool.execute(task);
         }
 
+        threadPool.addCallback(callback);
         Context context = threadPool.getContext();
-        Thread callbackThread = new Thread(new Runnable(){
-            @Override
-            public void run() {
-                while (!context.isFinished() && context.getInterruptedTaskCount()==0){}
-                if (context.getInterruptedTaskCount()!=0){  return;   }
-                callback.run();
-            }
-        });
-
         threadPool.shutdown();
-        callbackThread.start();
+
         return context;
     }
 
