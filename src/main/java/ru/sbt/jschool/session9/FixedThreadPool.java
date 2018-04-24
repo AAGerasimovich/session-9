@@ -3,12 +3,14 @@ package ru.sbt.jschool.session9;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.Queue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class FixedThreadPool implements Executor {
     private final Queue<Runnable> workQueue = new ConcurrentLinkedQueue<>();
     private volatile boolean isOpen= true;
     private PoolContext context;
     private int queueCount;
+    private Runnable callback;
 
     public FixedThreadPool(int nThreads) {
 
@@ -21,7 +23,7 @@ public class FixedThreadPool implements Executor {
     @Override
     public void execute(Runnable command) {
         if (isOpen) {
-            workQueue.offer(command);
+            workQueue.add(command);
             queueCount++;
         }
     }
@@ -39,16 +41,26 @@ public class FixedThreadPool implements Executor {
                 if (nextTask != null) {
                     try {
                         nextTask.run();
-                        context.completedTaskCount++;
-                    } catch (Exception e){
-                        context.failedTaskCount++;
+                        context.completedTaskCount.incrementAndGet();
+                    } catch (Exception e) {
+                        context.failedTaskCount.incrementAndGet();
                     }
                 }
-                if (!isOpen && nextTask == null){
+
+                if (!isOpen && nextTask == null) {
+                    if(context.isFinished()){
+                        if (callback!=null){
+                            callback.run();
+                        }
+                    }
                     return;
                 }
             }
         }
+    }
+
+    public void addCallback(Runnable callback){
+        this.callback = callback;
     }
 
     public Context getContext(){
@@ -57,35 +69,23 @@ public class FixedThreadPool implements Executor {
 
     private class PoolContext implements Context {
 
-        private volatile int  completedTaskCount;
-        private volatile int  failedTaskCount;
-        private volatile int  interruptedTaskCount;
+        private volatile AtomicInteger completedTaskCount = new AtomicInteger();
+        private volatile AtomicInteger failedTaskCount = new AtomicInteger();
+        private volatile AtomicInteger interruptedTaskCount = new AtomicInteger();
 
-        public int getCompletedTaskCount() {
-            return completedTaskCount;
+        public int getCompletedTaskCount() { return completedTaskCount.get(); }
 
-        }
+        public int getFailedTaskCount() { return failedTaskCount.get(); }
 
-        public int getFailedTaskCount() {
-            return failedTaskCount;
-
-        }
-
-        public int getInterruptedTaskCount() {
-            return interruptedTaskCount;
-
-        }
+        public int getInterruptedTaskCount() { return interruptedTaskCount.get(); }
 
         public void interrupt() {
             if(!workQueue.isEmpty()) {
-                interruptedTaskCount = workQueue.size();
+                interruptedTaskCount.getAndSet(workQueue.size());
                 workQueue.clear();
             }
         }
 
-        public boolean isFinished() {
-            return queueCount == failedTaskCount + completedTaskCount;
-
-        }
+        public boolean isFinished() { return queueCount == failedTaskCount.get() + completedTaskCount.get(); }
     }
 }
