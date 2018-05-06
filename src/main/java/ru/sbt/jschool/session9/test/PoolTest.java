@@ -53,7 +53,7 @@ public class PoolTest {
         try {
             Thread.sleep(100);
             c.interrupt();
-            Thread.sleep(2000);
+            Thread.sleep(3000);
         }catch (Exception e){}
 
         System.out.println("Completed   - " + c.getCompletedTaskCount());
