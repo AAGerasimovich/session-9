@@ -23,15 +23,14 @@ public class FixedThreadPool implements Executor {
 
     @Override
     public void execute(Runnable command) {
-        if (command==null){
+        if (command == null) {
             throw new NullPointerException();
         }
         if (isOpen) {
             workQueue.add(command);
             queueCount++;
         } else {
-            throw new  RejectedExecutionException();
-
+            throw new RejectedExecutionException();
         }
     }
 
@@ -53,17 +52,12 @@ public class FixedThreadPool implements Executor {
                         context.failedTaskCount.incrementAndGet();
                     }
                 }
-                if(!isOpen && nextTask==null){
+                if (!isOpen && nextTask != null) {
+
                     if (context.isFinished()) {
-                        if (callback != null) {
-                            callback.run();
-                        }
-
+                        callback.run();
                     }
-                    return;
                 }
-
-
             }
         }
     }
