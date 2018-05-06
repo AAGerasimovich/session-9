@@ -5,12 +5,12 @@ public class ExecutionManagerImpl implements ExecutionManager {
 
     private final static int POOL_SIZE = 10;
 
-    public Context execute(Runnable callback, Runnable... tasks){
+    public Context execute(Runnable callback, Runnable... tasks) {
 
         FixedThreadPool threadPool = new FixedThreadPool(POOL_SIZE);
 
-        for (Runnable task:
-             tasks) {
+        for (Runnable task :
+                tasks) {
             threadPool.execute(task);
         }
 
