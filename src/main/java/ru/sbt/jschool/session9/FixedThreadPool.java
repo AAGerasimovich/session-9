@@ -53,12 +53,15 @@ public class FixedThreadPool implements Executor {
                         context.failedTaskCount.incrementAndGet();
                     }
                 }
-                if(!isOpen && nextTask!=null )
+                if(!isOpen && nextTask==null){
                     if (context.isFinished()) {
                         if (callback != null) {
                             callback.run();
                         }
+
                     }
+                    return;
+                }
 
 
             }
